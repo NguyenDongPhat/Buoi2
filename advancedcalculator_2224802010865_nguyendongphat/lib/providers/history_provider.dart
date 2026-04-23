@@ -8,26 +8,20 @@ class HistoryProvider extends ChangeNotifier {
 
   List<CalculationHistory> get history => _history;
 
-  HistoryProvider() {
-    _init();
-  }
+  HistoryProvider() { _loadHistory(); }
 
-  Future<void> _init() async {
+  void _loadHistory() async {
     _history = await _storage.loadHistory();
     notifyListeners();
   }
 
-  void addRecord(String exp, String res) {
-    // Thêm vào đầu danh sách
+  void addRecord(String expression, String result) {
     _history.insert(0, CalculationHistory(
-      expression: exp,
-      result: res,
+      expression: expression,
+      result: result,
       timestamp: DateTime.now(),
     ));
-    
-    // Giới hạn 50 mục [cite: 206]
     if (_history.length > 50) _history.removeLast();
-    
     _storage.saveHistory(_history);
     notifyListeners();
   }

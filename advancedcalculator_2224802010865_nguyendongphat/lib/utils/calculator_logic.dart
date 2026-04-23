@@ -1,21 +1,29 @@
-// lib/utils/calculator_logic.dart
 
 class CalculatorLogic {
-  // Hàm định dạng kết quả (VD: loại bỏ số .0 ở cuối)
-  static String formatResult(String result) {
-    if (result.endsWith('.0')) {
-      return result.substring(0, result.length - 2);
+  static String toggleSign(String currentExpression, bool isProgrammerMode) {
+    if (currentExpression.isEmpty) {
+      return "-"; 
+    } else {
+      if (isProgrammerMode) {
+        return "$currentExpression * (-1)";
+      } else {
+        return "$currentExpression×(-1)";
+      }
     }
-    return result;
   }
 
-  // Logic đổi dấu (+/-)
-  static String toggleSign(String currentResult) {
-    if (currentResult == '0' || currentResult == 'Error') return currentResult;
-    if (currentResult.startsWith('-')) {
-      return currentResult.substring(1); // Bỏ dấu trừ
-    } else {
-      return '-$currentResult'; // Thêm dấu trừ
+  static String formatResult(String result) {
+    if (result == 'Error') return result;
+    
+    String formatted = result;
+    if (formatted.contains('.')) {
+      while (formatted.endsWith('0')) {
+        formatted = formatted.substring(0, formatted.length - 1);
+      }
+      if (formatted.endsWith('.')) {
+        formatted = formatted.substring(0, formatted.length - 1);
+      }
     }
+    return formatted;
   }
 }

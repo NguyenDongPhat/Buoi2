@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 import '../services/storage_service.dart';
 
 class ThemeProvider extends ChangeNotifier {
@@ -7,39 +8,41 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode get themeMode => _themeMode;
 
-  ThemeProvider() {
-    _loadTheme();
-  }
+  ThemeProvider() { _loadTheme(); }
 
   void _loadTheme() async {
-    String mode = await _storage.loadTheme();
-    _themeMode = mode == 'light' ? ThemeMode.light : (mode == 'dark' ? ThemeMode.dark : ThemeMode.system);
-    notifyListeners();
+    final saved = await _storage.loadTheme();
+    if (saved != null) {
+      _themeMode = saved == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      notifyListeners();
+    }
   }
 
   void setTheme(ThemeMode mode) {
     _themeMode = mode;
-    _storage.saveTheme(mode.toString().split('.').last);
+    _storage.saveTheme(mode == ThemeMode.dark ? 'dark' : 'light');
     notifyListeners();
   }
 
-  // ThemeData cho giao diện Sáng (Light) [cite: 28]
   ThemeData get lightTheme => ThemeData(
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFF1E1E1E), // Primary
+    brightness: Brightness.light, 
+    scaffoldBackgroundColor: AppColors.primaryLight,
     colorScheme: const ColorScheme.light(
-      secondary: Color(0xFF424242), // Secondary
-      tertiary: Color(0xFFFF6B6B),  // Accent
+      primary: AppColors.primaryLight,
+      secondary: AppColors.secondaryLight,
+      onSecondary: Colors.black, 
+      tertiary: AppColors.accentLight,
     ),
   );
 
-  // ThemeData cho giao diện Tối (Dark) [cite: 29]
   ThemeData get darkTheme => ThemeData(
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF121212), // Primary
+    brightness: Brightness.dark, 
+    scaffoldBackgroundColor: AppColors.primaryDark,
     colorScheme: const ColorScheme.dark(
-      secondary: Color(0xFF2C2C2C), // Secondary
-      tertiary: Color(0xFF4ECDC4),  // Accent
+      primary: AppColors.primaryDark,
+      secondary: AppColors.secondaryDark,
+      onSecondary: Colors.white,
+      tertiary: AppColors.accentDark,
     ),
   );
 }

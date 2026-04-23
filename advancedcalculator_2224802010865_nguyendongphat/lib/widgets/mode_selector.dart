@@ -1,54 +1,31 @@
-// lib/widgets/mode_selector.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/calculator_mode.dart';
 import '../providers/calculator_provider.dart';
+import '../models/calculator_mode.dart';
 
 class ModeSelector extends StatelessWidget {
-  const ModeSelector({Key? key}) : super(key: key);
+  const ModeSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final calc = Provider.of<CalculatorProvider>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildModeButton(context, "Basic", CalculatorMode.basic),
-        const SizedBox(width: 20),
-        _buildModeButton(context, "Scientific", CalculatorMode.scientific),
+        _btn(context, "Basic", CalculatorMode.basic, calc),
+        const SizedBox(width: 16),
+        _btn(context, "Scientific", CalculatorMode.scientific, calc),
+        const SizedBox(width: 16),
+        _btn(context, "Programmer", CalculatorMode.programmer, calc),
       ],
     );
   }
 
-  Widget _buildModeButton(BuildContext context, String title, CalculatorMode mode) {
-    final provider = Provider.of<CalculatorProvider>(context);
-    bool isActive = provider.mode == mode;
-    
+  Widget _btn(BuildContext context, String label, CalculatorMode mode, CalculatorProvider calc) {
+    bool active = calc.mode == mode;
     return GestureDetector(
-      onTap: () => provider.toggleMode(mode),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-              color: isActive 
-                  ? Theme.of(context).colorScheme.tertiary 
-                  : Colors.grey,
-            ),
-          ),
-          if (isActive)
-            Container(
-              margin: const EdgeInsets.only(top: 4),
-              height: 3,
-              width: 30,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            )
-        ],
-      ),
+      onTap: () => calc.setMode(mode),
+      child: Text(label, style: TextStyle(color: active ? Theme.of(context).colorScheme.tertiary : Colors.grey, fontWeight: active ? FontWeight.bold : FontWeight.normal)),
     );
   }
 }

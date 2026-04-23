@@ -1,71 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart'; // Thư viện định dạng ngày tháng
 import '../providers/history_provider.dart';
+import 'package:intl/intl.dart';
 
 class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+  const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final historyProvider = Provider.of<HistoryProvider>(context);
-    final historyList = historyProvider.history;
-
+    final history = Provider.of<HistoryProvider>(context).history;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calculation History'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () {
-              // Hộp thoại xác nhận xóa [cite: 230]
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Clear History'),
-                  content: const Text('Are you sure you want to clear all history?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        historyProvider.clearHistory();
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Clear', style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          )
-        ],
+      appBar: AppBar(title: const Text("History")),
+      body: ListView.builder(
+        itemCount: history.length,
+        itemBuilder: (context, i) {
+          final item = history[i];
+          return ListTile(
+            title: Text(item.expression, style: const TextStyle(color: Colors.grey)),
+            subtitle: Text(DateFormat('HH:mm - dd/MM').format(item.timestamp)),
+            trailing: Text(item.result, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          );
+        },
       ),
-      body: historyList.isEmpty
-          ? const Center(child: Text('No history yet.', style: TextStyle(fontSize: 18)))
-          : ListView.separated(
-              itemCount: historyList.length,
-              separatorBuilder: (context, index) => const Divider(),
-              itemBuilder: (context, index) {
-                final item = historyList[index];
-                final timeFormatted = DateFormat('MMM dd, HH:mm').format(item.timestamp);
-                
-                return ListTile(
-                  title: Text(item.expression, style: const TextStyle(fontSize: 20, color: Colors.grey)),
-                  subtitle: Text(timeFormatted, style: const TextStyle(fontSize: 12)),
-                  trailing: Text(
-                    item.result, 
-                    style: TextStyle(
-                      fontSize: 24, 
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.tertiary
-                    )
-                  ),
-                );
-              },
-            ),
     );
   }
 }

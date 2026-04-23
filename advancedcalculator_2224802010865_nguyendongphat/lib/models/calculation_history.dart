@@ -10,15 +10,14 @@ class CalculationHistory {
   });
 
   Map<String, dynamic> toJson() => {
-        'expression': expression,
-        'result': result,
-        'timestamp': timestamp.toIso8601String(),
-      };
+    'expression': expression,
+    'result': result,
+    'timestamp': timestamp.toIso8601String(),
+  };
 
-  factory CalculationHistory.fromJson(Map<String, dynamic> json) =>
-      CalculationHistory(
-        expression: json['expression'],
-        result: json['result'],
-        timestamp: DateTime.parse(json['timestamp']),
-      );
+  factory CalculationHistory.fromJson(Map<String, dynamic> json) => CalculationHistory(
+    expression: json['expression'],
+    result: json['result'],
+    timestamp: DateTime.parse(json['timestamp']),
+  );
 }
